@@ -1,0 +1,7 @@
+dist/
+node_modules/
+*.log
+.env
+.env.*
+*.config.js
+*.config.mjs

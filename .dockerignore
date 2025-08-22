@@ -1,0 +1,19 @@
+# Git history
+.git
+
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Environment files
+.env*
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db

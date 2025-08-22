@@ -1,0 +1,20 @@
+app = "mandoline-mcp-server"
+primary_region = "sjc"
+
+[build]
+dockerfile = "Dockerfile"
+
+[[services]]
+processes      = ["app"]
+internal_port  = 8080
+protocol       = "tcp"
+auto_stop_machines = true
+auto_start_machines = true
+
+[[services.ports]]
+  port     = 80
+  handlers = ["http"]
+
+[[services.ports]]
+  port     = 443
+  handlers = ["tls", "http"]
