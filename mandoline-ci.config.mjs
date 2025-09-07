@@ -1,5 +1,3 @@
-// This configuration evaluates the project's own code changes
-
 export default [
   {
     name: 'src',
