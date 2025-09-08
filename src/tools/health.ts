@@ -2,6 +2,8 @@ import { jsonToolResponse } from '../helpers.js';
 import { server } from '../server.js';
 import { TOOL_DESCRIPTIONS } from './descriptions.js';
 
+export const HEALTH_RESPONSE = { status: 'ok' } as const;
+
 server.registerTool(
   'get_server_health',
   {
@@ -9,6 +11,6 @@ server.registerTool(
     inputSchema: {},
   },
   async () => {
-    return jsonToolResponse({ status: 'ok' });
+    return jsonToolResponse(HEALTH_RESPONSE);
   }
 );

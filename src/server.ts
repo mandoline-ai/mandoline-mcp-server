@@ -18,6 +18,7 @@ import {
   handleTransportRequest,
   getSessionClientInfo,
 } from "./session-management.js";
+import { HEALTH_RESPONSE } from "./tools/health.js";
 
 export const serverConfig = {
   name: "mandoline-mcp-server",
@@ -60,7 +61,7 @@ const readmeText = readFileSync(
   "utf8"
 );
 
-app.get("/health", (_req, res) => res.json({ status: "ok" }));
+app.get("/health", (_req, res) => res.json(HEALTH_RESPONSE));
 
 app.get("/mcp", (_req, res) =>
   res.type("text/plain; charset=utf-8").send(readmeText)
