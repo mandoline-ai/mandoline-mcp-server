@@ -115,6 +115,7 @@ async function main() {
     logger.info("loading tools…");
     await import("./tools/metrics.js");
     await import("./tools/evaluations.js");
+    await import("./tools/health.js");
     await import("./resources.js");
 
     const PORT = process.env.PORT ?? 8080;
