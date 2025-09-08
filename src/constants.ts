@@ -1,0 +1,1 @@
+export const HEALTH_RESPONSE = { status: 'ok' } as const;

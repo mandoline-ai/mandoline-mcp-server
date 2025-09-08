@@ -18,7 +18,7 @@ import {
   handleTransportRequest,
   getSessionClientInfo,
 } from "./session-management.js";
-import { HEALTH_RESPONSE } from "./tools/health.js";
+import { HEALTH_RESPONSE } from "./constants.js";
 
 export const serverConfig = {
   name: "mandoline-mcp-server",
