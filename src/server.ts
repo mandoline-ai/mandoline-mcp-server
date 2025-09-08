@@ -18,11 +18,12 @@ import {
   handleTransportRequest,
   getSessionClientInfo,
 } from "./session-management.js";
+import { HEALTH_RESPONSE } from "./constants.js";
 
 export const serverConfig = {
   name: "mandoline-mcp-server",
   title: "Mandoline",
-  version: "0.1.0",
+  version: "0.2.0",
 };
 
 export const server = new McpServer(serverConfig);
@@ -60,7 +61,7 @@ const readmeText = readFileSync(
   "utf8"
 );
 
-app.get("/health", (_req, res) => res.json({ ...serverConfig, ok: true }));
+app.get("/health", (_req, res) => res.json(HEALTH_RESPONSE));
 
 app.get("/mcp", (_req, res) =>
   res.type("text/plain; charset=utf-8").send(readmeText)
@@ -115,6 +116,7 @@ async function main() {
     logger.info("loading tools…");
     await import("./tools/metrics.js");
     await import("./tools/evaluations.js");
+    await import("./tools/health.js");
     await import("./resources.js");
 
     const PORT = process.env.PORT ?? 8080;

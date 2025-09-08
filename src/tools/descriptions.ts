@@ -89,6 +89,8 @@ export const TOOL_DESCRIPTIONS = {
   get_evaluation: 'Retrieves one evaluation by ID.',
   get_evaluations: 'Lists evaluations with pagination and filtering.',
   update_evaluation: 'Updates evaluation metadata (score is immutable).',
+
+  get_server_health: 'Check the server health status.',
 } as const;
 
 export const SHARED_PARAM_DESCRIPTIONS = {
