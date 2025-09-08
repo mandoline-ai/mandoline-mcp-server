@@ -60,7 +60,7 @@ const readmeText = readFileSync(
   "utf8"
 );
 
-app.get("/health", (_req, res) => res.json({ ...serverConfig, ok: true }));
+app.get("/health", (_req, res) => res.json({ status: "ok" }));
 
 app.get("/mcp", (_req, res) =>
   res.type("text/plain; charset=utf-8").send(readmeText)
