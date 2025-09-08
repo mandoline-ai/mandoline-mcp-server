@@ -1,5 +1,5 @@
-import { handleToolError, jsonToolResponse } from '../helpers.js';
-import { server, serverConfig } from '../server.js';
+import { jsonToolResponse } from '../helpers.js';
+import { server } from '../server.js';
 import { TOOL_DESCRIPTIONS } from './descriptions.js';
 
 server.registerTool(
@@ -9,15 +9,6 @@ server.registerTool(
     inputSchema: {},
   },
   async () => {
-    try {
-      const healthStatus = {
-        ...serverConfig,
-        ok: true,
-        timestamp: new Date().toISOString(),
-      };
-      return jsonToolResponse(healthStatus);
-    } catch (error) {
-      handleToolError(error);
-    }
+    return jsonToolResponse({ status: 'ok' });
   }
 );
