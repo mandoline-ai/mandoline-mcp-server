@@ -11,6 +11,7 @@ import { requestContext, server, serverConfig } from '../server.js';
 import {
   EVALUATION_PARAM_DESCRIPTIONS as E,
   METRIC_PARAM_DESCRIPTIONS as M,
+  SCHEMA_DESCRIPTIONS as D,
   SHARED_PARAM_DESCRIPTIONS as S,
   TOOL_DESCRIPTIONS,
 } from './descriptions.js';
@@ -63,8 +64,8 @@ server.registerTool(
     description: TOOL_DESCRIPTIONS.create_evaluation,
     inputSchema: {
       metric_id: z.string().describe(M.metric_id),
-      prompt: PromptSchema,
-      response: ResponseSchema,
+      prompt: PromptSchema.describe(D.prompt.root),
+      response: ResponseSchema.describe(D.response.root),
       model_name: z.string().optional().describe(E.model_name),
       properties: z.record(z.unknown()).optional().describe(S.properties),
     },
@@ -99,8 +100,8 @@ server.registerTool(
     description: TOOL_DESCRIPTIONS.batch_create_evaluations,
     inputSchema: {
       metric_ids: z.array(z.string()).describe(M.metric_ids),
-      prompt: PromptSchema,
-      response: ResponseSchema,
+      prompt: PromptSchema.describe(D.prompt.root),
+      response: ResponseSchema.describe(D.response.root),
       model_name: z.string().optional().describe(E.model_name),
       properties: z.record(z.unknown()).optional().describe(S.properties),
     },

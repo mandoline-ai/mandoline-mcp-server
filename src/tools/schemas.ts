@@ -99,9 +99,15 @@ function tryParseJson(value: unknown): unknown {
   return value;
 }
 
-export const PromptSchema = z.preprocess(tryParseJson, BasePromptSchema);
+export const PromptSchema = z
+  .union([z.string(), BasePromptSchema])
+  .transform(tryParseJson)
+  .pipe(BasePromptSchema);
 
-export const ResponseSchema = z.preprocess(tryParseJson, BaseResponseSchema);
+export const ResponseSchema = z
+  .union([z.string(), BaseResponseSchema])
+  .transform(tryParseJson)
+  .pipe(BaseResponseSchema);
 
 const PLACEHOLDER_RE =
   /\[(?:the full response|trimmed|placeholder|todo)[^\]]*]/i;
