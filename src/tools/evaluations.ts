@@ -6,6 +6,7 @@ import {
   handleToolError,
   jsonToolResponse,
 } from '../helpers.js';
+import { logger } from '../logger.js';
 import { getMandolineClient } from '../mandoline-client.js';
 import { requestContext, server, serverConfig } from '../server.js';
 import {
@@ -72,6 +73,11 @@ server.registerTool(
   },
   async ({ metric_id, prompt, response, model_name, properties = {} }) => {
     try {
+      const store = requestContext.getStore();
+      const log = store ? logger.child({ requestId: store.requestId }) : logger;
+
+      log.debug({ metric_id, model_name }, 'Starting evaluation creation');
+
       const { flatPrompt, flatResponse, mergedProperties } =
         getEvaluationPayload(prompt, response, model_name, properties);
 
@@ -83,9 +89,15 @@ server.registerTool(
       };
 
       const mandoline = getMandolineClient();
+
       const newEval = await mandoline.createEvaluation(
         payload as EvaluationCreate,
         DEFAULT_INCLUDE_CONTENT
+      );
+
+      log.debug(
+        { evaluationId: newEval.id },
+        'Evaluation created successfully'
       );
       return jsonToolResponse(newEval);
     } catch (error) {
