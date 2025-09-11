@@ -1,4 +1,4 @@
-// Mandoline Agentic Evaluation Schema – revised 2025‑08‑06
+// Mandoline Agentic Evaluation Schema
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { z } from 'zod';
@@ -60,7 +60,7 @@ export const ToolInvocationSchema = z.object({
 });
 export type ToolInvocation = z.infer<typeof ToolInvocationSchema>;
 
-const BasePromptSchema = z.object({
+export const PromptSchema = z.object({
   messages: z.array(ChatMessageSchema).describe(D.prompt.messages),
   context_assets: z
     .array(ContextAssetSchema)
@@ -74,7 +74,7 @@ const BasePromptSchema = z.object({
     .describe(D.prompt.invocations),
 });
 
-const BaseResponseSchema = z.object({
+export const ResponseSchema = z.object({
   message: ChatMessageSchema.describe(D.response.message),
   output_assets: z
     .array(OutputAssetSchema)
@@ -87,27 +87,6 @@ const BaseResponseSchema = z.object({
     .default([])
     .describe(D.response.invocations),
 });
-
-function tryParseJson(value: unknown): unknown {
-  if (typeof value === 'string') {
-    try {
-      return JSON.parse(value);
-    } catch {
-      return value;
-    }
-  }
-  return value;
-}
-
-export const PromptSchema = z
-  .union([z.string(), BasePromptSchema])
-  .transform(tryParseJson)
-  .pipe(BasePromptSchema);
-
-export const ResponseSchema = z
-  .union([z.string(), BaseResponseSchema])
-  .transform(tryParseJson)
-  .pipe(BaseResponseSchema);
 
 const PLACEHOLDER_RE =
   /\[(?:the full response|trimmed|placeholder|todo)[^\]]*]/i;
@@ -153,8 +132,8 @@ export class PromptModel {
   contextAssets: ContextAssetModel[];
   invocations: InvocationModel[];
 
-  constructor(data: z.input<typeof BasePromptSchema>) {
-    const parsed = BasePromptSchema.parse(data);
+  constructor(data: z.input<typeof PromptSchema>) {
+    const parsed = PromptSchema.parse(data);
     this.messages = parsed.messages.map((m) => new ChatMessageModel(m));
     this.contextAssets = parsed.context_assets.map(
       (a) => new ContextAssetModel(a)
@@ -212,7 +191,7 @@ export class PromptModel {
     return parts.join('\n\n');
   }
 
-  static schema = BasePromptSchema;
+  static schema = PromptSchema;
 }
 
 export class ResponseModel {
@@ -220,8 +199,8 @@ export class ResponseModel {
   outputAssets: OutputAssetModel[];
   invocations: InvocationModel[];
 
-  constructor(data: z.input<typeof BaseResponseSchema>) {
-    const parsed = BaseResponseSchema.parse(data);
+  constructor(data: z.input<typeof ResponseSchema>) {
+    const parsed = ResponseSchema.parse(data);
     this.message = new ChatMessageModel(parsed.message);
     this.outputAssets = parsed.output_assets.map(
       (a) => new OutputAssetModel(a)
@@ -272,7 +251,7 @@ export class ResponseModel {
     return parts.join('\n\n');
   }
 
-  static schema = BaseResponseSchema;
+  static schema = ResponseSchema;
 }
 
 export interface EvaluationPayloadInput {
@@ -287,7 +266,6 @@ export function buildPromptResponsePair({
   prompt,
   response,
 }: EvaluationPayloadInput) {
-  // Parse with preprocessing to handle JSON strings
   const parsedPrompt = PromptSchema.parse(prompt);
   const parsedResponse = ResponseSchema.parse(response);
 

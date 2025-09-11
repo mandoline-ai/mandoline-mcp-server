@@ -10,9 +10,9 @@ import { logger } from '../logger.js';
 import { getMandolineClient } from '../mandoline-client.js';
 import { requestContext, server, serverConfig } from '../server.js';
 import {
+  SCHEMA_DESCRIPTIONS as D,
   EVALUATION_PARAM_DESCRIPTIONS as E,
   METRIC_PARAM_DESCRIPTIONS as M,
-  SCHEMA_DESCRIPTIONS as D,
   SHARED_PARAM_DESCRIPTIONS as S,
   TOOL_DESCRIPTIONS,
 } from './descriptions.js';
@@ -75,8 +75,6 @@ server.registerTool(
     try {
       const store = requestContext.getStore();
       const log = store ? logger.child({ requestId: store.requestId }) : logger;
-
-      log.debug({ metric_id, model_name }, 'Starting evaluation creation');
 
       const { flatPrompt, flatResponse, mergedProperties } =
         getEvaluationPayload(prompt, response, model_name, properties);

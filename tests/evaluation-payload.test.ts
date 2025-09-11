@@ -22,18 +22,14 @@ describe("Evaluation Payload Schema Tests", () => {
       expect(() => PromptSchema.parse(samplePromptObject)).not.toThrow();
     });
 
-    it("should accept string input", () => {
+    it("should reject string input", () => {
       const promptString = JSON.stringify(samplePromptObject);
-      expect(() => PromptSchema.parse(promptString)).not.toThrow();
+      expect(() => PromptSchema.parse(promptString)).toThrow();
     });
 
-    it("should produce equivalent results for string and object inputs", () => {
-      const promptString = JSON.stringify(samplePromptObject);
-      
-      const objectResult = PromptSchema.parse(samplePromptObject);
-      const stringResult = PromptSchema.parse(promptString);
-      
-      expect(stringResult).toEqual(objectResult);
+    it("should validate required fields", () => {
+      expect(() => PromptSchema.parse({})).toThrow();
+      expect(() => PromptSchema.parse({ messages: [] })).not.toThrow(); // Empty array allowed by schema
     });
   });
 
@@ -42,18 +38,14 @@ describe("Evaluation Payload Schema Tests", () => {
       expect(() => ResponseSchema.parse(sampleResponseObject)).not.toThrow();
     });
 
-    it("should accept string input", () => {
+    it("should reject string input", () => {
       const responseString = JSON.stringify(sampleResponseObject);
-      expect(() => ResponseSchema.parse(responseString)).not.toThrow();
+      expect(() => ResponseSchema.parse(responseString)).toThrow();
     });
 
-    it("should produce equivalent results for string and object inputs", () => {
-      const responseString = JSON.stringify(sampleResponseObject);
-      
-      const objectResult = ResponseSchema.parse(sampleResponseObject);
-      const stringResult = ResponseSchema.parse(responseString);
-      
-      expect(stringResult).toEqual(objectResult);
+    it("should validate required fields", () => {
+      expect(() => ResponseSchema.parse({})).toThrow();
+      expect(() => ResponseSchema.parse({ message: { role: "user", content: "test" } })).not.toThrow(); // Role validation happens in model validation
     });
   });
 
@@ -63,12 +55,12 @@ describe("Evaluation Payload Schema Tests", () => {
       expect(fs.existsSync("./dist/tools/schemas.js")).toBe(true);
     });
 
-    it("should use union types for MCP compatibility", () => {
+    it("should use direct object schemas", () => {
       const fs = require("fs");
       const schemaSource = fs.readFileSync("./src/tools/schemas.ts", "utf8");
       
-      expect(schemaSource).toContain(".union([z.string(), BasePromptSchema])");
-      expect(schemaSource).toContain(".union([z.string(), BaseResponseSchema])");
+      expect(schemaSource).toContain("export const PromptSchema = z.object");
+      expect(schemaSource).toContain("export const ResponseSchema = z.object");
     });
   });
 });
