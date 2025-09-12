@@ -5,11 +5,10 @@ import { requestContext } from "./server.js";
 
 export function getMandolineClient() {
   const store = requestContext.getStore();
-  const log = store ? logger.child({ requestId: store.requestId }) : logger;
   
   const apiKey = store?.apiKey;
   if (!apiKey) {
-    log.error('Mandoline API key missing from request context');
+    logger.error('Mandoline API key missing from request context');
     throw new Error("Mandoline API key missing.");
   }
   

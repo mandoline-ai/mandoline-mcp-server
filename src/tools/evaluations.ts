@@ -73,9 +73,6 @@ server.registerTool(
   },
   async ({ metric_id, prompt, response, model_name, properties = {} }) => {
     try {
-      const store = requestContext.getStore();
-      const log = store ? logger.child({ requestId: store.requestId }) : logger;
-
       const { flatPrompt, flatResponse, mergedProperties } =
         getEvaluationPayload(prompt, response, model_name, properties);
 
@@ -93,10 +90,6 @@ server.registerTool(
         DEFAULT_INCLUDE_CONTENT
       );
 
-      log.debug(
-        { evaluationId: newEval.id },
-        'Evaluation created successfully'
-      );
       return jsonToolResponse(newEval);
     } catch (error) {
       handleToolError(error);
