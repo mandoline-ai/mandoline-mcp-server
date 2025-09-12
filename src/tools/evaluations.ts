@@ -6,7 +6,6 @@ import {
   handleToolError,
   jsonToolResponse,
 } from '../helpers.js';
-import { logger } from '../logger.js';
 import { getMandolineClient } from '../mandoline-client.js';
 import { requestContext, server, serverConfig } from '../server.js';
 import {

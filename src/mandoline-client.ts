@@ -1,6 +1,5 @@
 import { Mandoline } from "mandoline";
 
-import { logger } from "./logger.js";
 import { requestContext } from "./server.js";
 
 export function getMandolineClient() {
@@ -8,7 +7,6 @@ export function getMandolineClient() {
   
   const apiKey = store?.apiKey;
   if (!apiKey) {
-    logger.error('Mandoline API key missing from request context');
     throw new Error("Mandoline API key missing.");
   }
   
