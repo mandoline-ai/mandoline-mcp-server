@@ -51,6 +51,10 @@ export const SCHEMA_DESCRIPTIONS = {
   },
 
   prompt: {
+    root:
+      'Complete prompt context including conversation history, assets read, ' +
+      'and tool calls executed before the assistant reply being evaluated. ' +
+      'Must be provided as an object.',
     messages:
       'COMPLETE conversation history up to—but NOT including—the assistant ' +
       'reply being evaluated. Include BOTH user and assistant turns in ' +
@@ -63,6 +67,10 @@ export const SCHEMA_DESCRIPTIONS = {
   },
 
   response: {
+    root:
+      "The assistant's complete response being evaluated, including the " +
+      'message content, generated assets, and any tool calls made. ' +
+      'Must be provided as an object.',
     message:
       "The assistant's reply for THIS turn (the thing being scored). " +
       "Must have role 'assistant'.",

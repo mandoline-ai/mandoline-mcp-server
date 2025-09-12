@@ -1,10 +1,12 @@
-export default {
+const config = {
   preset: "ts-jest/presets/default-esm",
-  extensionsToTreatAsEsm: [".ts"],
-  transform: {
-    "^.+\\.ts$": ["ts-jest", { useESM: true }],
-  },
   testEnvironment: "node",
-  testMatch: ["**/__tests__/**/*.test.ts", "**/?(*.)+(spec|test).ts"],
-  setupFilesAfterEnv: ["<rootDir>/tests/setup.ts"],
+  transform: {
+    "^.+\\.(t|j)sx?$": ["@swc/jest", { sourceMaps: "inline" }],
+  },
+  moduleNameMapper: {
+    "^(\\.{1,2}/.*)\\.js$": "$1",
+  },
 };
+
+export default config;

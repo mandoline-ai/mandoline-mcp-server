@@ -9,6 +9,7 @@ import {
 import { getMandolineClient } from '../mandoline-client.js';
 import { requestContext, server, serverConfig } from '../server.js';
 import {
+  SCHEMA_DESCRIPTIONS as D,
   EVALUATION_PARAM_DESCRIPTIONS as E,
   METRIC_PARAM_DESCRIPTIONS as M,
   SHARED_PARAM_DESCRIPTIONS as S,
@@ -63,8 +64,8 @@ server.registerTool(
     description: TOOL_DESCRIPTIONS.create_evaluation,
     inputSchema: {
       metric_id: z.string().describe(M.metric_id),
-      prompt: PromptSchema,
-      response: ResponseSchema,
+      prompt: PromptSchema.describe(D.prompt.root),
+      response: ResponseSchema.describe(D.response.root),
       model_name: z.string().optional().describe(E.model_name),
       properties: z.record(z.unknown()).optional().describe(S.properties),
     },
@@ -82,10 +83,12 @@ server.registerTool(
       };
 
       const mandoline = getMandolineClient();
+
       const newEval = await mandoline.createEvaluation(
         payload as EvaluationCreate,
         DEFAULT_INCLUDE_CONTENT
       );
+
       return jsonToolResponse(newEval);
     } catch (error) {
       handleToolError(error);
@@ -99,8 +102,8 @@ server.registerTool(
     description: TOOL_DESCRIPTIONS.batch_create_evaluations,
     inputSchema: {
       metric_ids: z.array(z.string()).describe(M.metric_ids),
-      prompt: PromptSchema,
-      response: ResponseSchema,
+      prompt: PromptSchema.describe(D.prompt.root),
+      response: ResponseSchema.describe(D.response.root),
       model_name: z.string().optional().describe(E.model_name),
       properties: z.record(z.unknown()).optional().describe(S.properties),
     },
