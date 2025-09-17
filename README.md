@@ -22,7 +22,15 @@ You can use `--scope user` (across projects) or `--scope project` (current proje
 
 **Note**: Restart any active Claude Code sessions after configuration changes.
 
-**Verify**: Run `/mcp` in Claude Code to see Mandoline listed as an active server.
+**Verify**: Run `/mcp` in Claude Code to see Mandoline listed as a connected server:
+
+![Claude Code MCP Connected](assets/claude-code-mcp-connected.png)
+
+**Tutorial**: Watch Claude [evaluate multiple code solutions and pick the best one](https://youtu.be/CHmCo27fBqA?feature=shared).
+
+![Claude Code Evaluation Results](assets/claude-code-evaluation-results.jpg)
+
+*Tutorial results - three unique code implementations evaluated against custom code quality metrics.*
 
 **Official Documentation**: [Claude Code MCP Guide](https://docs.anthropic.com/en/docs/claude-code/mcp)
 
