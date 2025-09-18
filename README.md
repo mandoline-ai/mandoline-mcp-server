@@ -151,6 +151,12 @@ Once integrated, you can use Mandoline evaluation tools directly in your AI assi
 
 ## Tools
 
+## Health
+
+| Tool                | Purpose                                                                     |
+| ------------------- | --------------------------------------------------------------------------- |
+| `get_server_health` | Confirm the MCP server is reachable and returning a healthy status payload. |
+
 ## Metrics
 
 | Tool                   | Purpose                                                   |
