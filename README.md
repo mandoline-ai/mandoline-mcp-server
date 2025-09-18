@@ -151,6 +151,12 @@ Once integrated, you can use Mandoline evaluation tools directly in your AI assi
 
 ## Tools
 
+## Health
+
+| Tool                | Purpose                                                                     |
+| ------------------- | --------------------------------------------------------------------------- |
+| `get_server_health` | Confirm the MCP server is reachable and returning a healthy status payload. |
+
 ## Metrics
 
 | Tool                   | Purpose                                                   |
@@ -173,7 +179,10 @@ Once integrated, you can use Mandoline evaluation tools directly in your AI assi
 
 ## Resources
 
-Access Mandoline's documentation and reference materials directly in your AI assistant, including model comparison guides and evaluation best practices.
+| Resource   | Description                                                                                                        |
+| ---------- | ------------------------------------------------------------------------------------------------------------------ |
+| `llms.txt` | Mandoline docs index (tools, tutorials, blogs, leaderboards, SDKs); mirrored from `https://mandoline.ai/llms.txt`. |
+| `mcp`      | MCP setup guide for assistants; mirrored from `https://mandoline.ai/mcp`.                                          |
 
 ---
 
