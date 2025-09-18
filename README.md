@@ -24,15 +24,27 @@ You can use `--scope user` (across projects) or `--scope project` (current proje
 
 **Verify**: Run `/mcp` in Claude Code to see Mandoline listed as a connected server:
 
-![Claude Code MCP Connected](assets/claude-code-mcp-connected.png)
+![Claude Code Mandoline MCP Connected](assets/claude-code-mandoline-mcp-connected.png)
 
 **Tutorial**: Watch Claude [evaluate multiple code solutions and pick the best one](https://youtu.be/CHmCo27fBqA?feature=shared).
 
-![Claude Code Evaluation Results](assets/claude-code-evaluation-results.jpg)
-
-*Tutorial results - three unique code implementations evaluated against custom code quality metrics.*
-
 **Official Documentation**: [Claude Code MCP Guide](https://docs.anthropic.com/en/docs/claude-code/mcp)
+
+## Codex
+
+Use the CLI to add the Mandoline MCP server to Codex:
+
+```bash
+codex mcp add mandoline --env MANDOLINE_API_KEY=sk_**** -- npx -y mcp-remote https://mandoline.ai/mcp --header 'x-api-key: ${MANDOLINE_API_KEY}'
+```
+
+**Note**: Restart any active Codex sessions after configuration changes.
+
+**Verify**: Run `/mcp` in Codex to see Mandoline listed as a connected server:
+
+![Codex Mandoline MCP Connected](assets/codex-mandoline-mcp-connected.png)
+
+**Official Documentation**: [Codex MCP Configuration](https://github.com/openai/codex/blob/main/docs/advanced.md#model-context-protocol-mcp)
 
 ## Claude Desktop
 
