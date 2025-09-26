@@ -12,6 +12,14 @@ export interface SessionResult {
   isNewSession: boolean;
 }
 
+export interface SessionOptions {
+  /**
+   * When false, the session must already exist. Used for GET/DELETE requests where
+   * the client is expected to provide an existing MCP session identifier.
+   */
+  createIfMissing?: boolean;
+}
+
 const transports = new Map<string, StreamableHTTPServerTransport>();
 const sessionClientInfo = new Map<string, { name?: string; version?: string }>();
 const sessionLastUsed = new Map<string, number>();
@@ -54,24 +62,41 @@ function makeTransport(id: string) {
 export async function getOrCreateSession(
   req: Request,
   res: Response,
-  log: typeof logger
+  log: typeof logger,
+  options: SessionOptions = {}
 ): Promise<SessionResult | null> {
+  const { createIfMissing = true } = options;
   const incomingSid = req.headers["mcp-session-id"] as string | undefined;
   let transport: StreamableHTTPServerTransport;
   let sid: string;
   let isNewSession = false;
 
-  if (incomingSid && transports.has(incomingSid)) {
-    sid = incomingSid;
-    transport = transports.get(sid)!;
-    log.debug({ sid }, "re-using transport");
-  } else {
+  if (incomingSid) {
+    if (transports.has(incomingSid)) {
+      sid = incomingSid;
+      transport = transports.get(sid)!;
+      log.debug({ sid }, "re-using transport");
+    } else {
+      log.warn({ incomingSid }, "session not found");
+      res
+        .status(404)
+        .json({
+          jsonrpc: "2.0",
+          error: {
+            code: -32001,
+            message: "Session not found",
+          },
+          id: null,
+        });
+      return null;
+    }
+  } else if (createIfMissing) {
     sid = randomUUID();
     transport = makeTransport(sid);
     transports.set(sid, transport);
     res.setHeader("Mcp-Session-Id", sid);
     isNewSession = true;
-    
+
     try {
       await server.connect(transport);
       log.info({ sid }, "new session");
@@ -79,6 +104,19 @@ export async function getOrCreateSession(
       log.error({ err }, "connect failed");
       return null;
     }
+  } else {
+    log.warn("missing session id");
+    res
+      .status(400)
+      .json({
+        jsonrpc: "2.0",
+        error: {
+          code: -32000,
+          message: "Bad Request: Mcp-Session-Id header is required",
+        },
+        id: null,
+      });
+    return null;
   }
 
   // Update last used timestamp

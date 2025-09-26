@@ -17,6 +17,7 @@ import {
   updateClientInfo,
   handleTransportRequest,
   getSessionClientInfo,
+  SessionOptions,
 } from "./session-management.js";
 import { HEALTH_RESPONSE } from "./constants.js";
 
@@ -63,29 +64,34 @@ const readmeText = readFileSync(
 
 app.get("/health", (_req, res) => res.json(HEALTH_RESPONSE));
 
-app.get("/mcp", (_req, res) =>
-  res.type("text/plain; charset=utf-8").send(readmeText)
-);
-
-app.post("/mcp", async (req: Request, res: Response) => {
+async function handleMcpRequest(
+  req: Request,
+  res: Response,
+  sessionOptions?: SessionOptions
+) {
   const requestId = (req as any).id as string;
-  const log = logger.child({ requestId });
+  const log = logger.child({ requestId, method: req.method });
 
   log.debug("request in");
 
   const apiKey = validateAuthentication(req, log);
   if (!apiKey) {
-    return res.status(401).json({ error: "Unauthorized" });
+    res.status(401).json({ error: "Unauthorized" });
+    return;
   }
 
-  const sessionResult = await getOrCreateSession(req, res, log);
+  const sessionResult = await getOrCreateSession(req, res, log, sessionOptions);
   if (!sessionResult) {
-    return res.status(500).json({ error: "Internal server error" });
+    if (!res.headersSent) {
+      res.status(500).json({ error: "Internal server error" });
+    }
+    return;
   }
 
   const { transport, sid } = sessionResult;
 
   (req as any).mcpSid = sid;
+  res.setHeader("Mcp-Session-Id", sid);
 
   updateClientInfo(sid, req, log);
 
@@ -95,6 +101,28 @@ app.post("/mcp", async (req: Request, res: Response) => {
       await handleTransportRequest(transport, req, res, sid, log);
     }
   );
+}
+
+app.get("/mcp", async (req: Request, res: Response) => {
+  const acceptHeader = req.headers.accept;
+  const acceptsSse = Array.isArray(acceptHeader)
+    ? acceptHeader.some((value) => value.includes("text/event-stream"))
+    : typeof acceptHeader === "string" && acceptHeader.includes("text/event-stream");
+
+  if (acceptsSse) {
+    await handleMcpRequest(req, res, { createIfMissing: false });
+    return;
+  }
+
+  res.type("text/plain; charset=utf-8").send(readmeText);
+});
+
+app.post("/mcp", async (req: Request, res: Response) => {
+  await handleMcpRequest(req, res);
+});
+
+app.delete("/mcp", async (req: Request, res: Response) => {
+  await handleMcpRequest(req, res, { createIfMissing: false });
 });
 
 app.use(
