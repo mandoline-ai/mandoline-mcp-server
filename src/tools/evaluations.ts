@@ -20,6 +20,7 @@ import {
   ResponseSchema,
   buildPromptResponsePair,
   type EvaluationPayloadInput,
+  LooseRecordSchema,
 } from './schemas.js';
 
 const DEFAULT_INCLUDE_CONTENT = false;
@@ -67,7 +68,7 @@ server.registerTool(
       prompt: PromptSchema.describe(D.prompt.root),
       response: ResponseSchema.describe(D.response.root),
       model_name: z.string().optional().describe(E.model_name),
-      properties: z.record(z.unknown()).optional().describe(S.properties),
+      properties: LooseRecordSchema.optional().describe(S.properties),
     },
   },
   async ({ metric_id, prompt, response, model_name, properties = {} }) => {
@@ -105,7 +106,7 @@ server.registerTool(
       prompt: PromptSchema.describe(D.prompt.root),
       response: ResponseSchema.describe(D.response.root),
       model_name: z.string().optional().describe(E.model_name),
-      properties: z.record(z.unknown()).optional().describe(S.properties),
+      properties: LooseRecordSchema.optional().describe(S.properties),
     },
   },
   async ({ metric_ids, prompt, response, model_name, properties = {} }) => {
@@ -194,7 +195,7 @@ server.registerTool(
     description: TOOL_DESCRIPTIONS.update_evaluation,
     inputSchema: {
       evaluation_id: z.string().describe(E.evaluation_id),
-      properties: z.record(z.unknown()).optional().describe(S.properties),
+      properties: LooseRecordSchema.optional().describe(S.properties),
     },
   },
   async ({ evaluation_id, properties }) => {

@@ -26,6 +26,10 @@ export type AssetKind = z.infer<typeof AssetKindSchema>;
 
 export type Metadata = Record<string, any>;
 
+// Allows arbitrary key/value pairs while serializing with additionalProperties: true.
+export const LooseRecordSchema = z.object({}).passthrough();
+export type LooseRecord = z.infer<typeof LooseRecordSchema>;
+
 export const ChatMessageSchema = z.object({
   role: RoleSchema.describe(D.chatMessage.role),
   content: z.string().describe(D.chatMessage.content),
@@ -36,7 +40,7 @@ const BaseAsset = {
   kind: AssetKindSchema,
   content: z.string(),
   description: z.string().optional(),
-  metadata: z.record(z.any()).optional(),
+  metadata: LooseRecordSchema.optional(),
 };
 
 export const ContextAssetSchema = z
