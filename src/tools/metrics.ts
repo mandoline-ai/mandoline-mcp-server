@@ -9,6 +9,7 @@ import {
   SHARED_PARAM_DESCRIPTIONS as S,
   TOOL_DESCRIPTIONS,
 } from './descriptions.js';
+import { LooseRecordSchema } from './schemas.js';
 
 server.registerTool(
   'create_metric',
@@ -101,12 +102,9 @@ server.registerTool(
       skip: z.number().optional().describe(S.skip),
       limit: z.number().optional().describe(S.limit),
       tags: z.array(z.string()).optional().describe(M.tags),
-      filters: z
-        .record(z.any())
-        .optional()
-        .describe(
-          `${S.filters} Example: {"name": "foo"} to filter by exact name match.`
-        ),
+      filters: LooseRecordSchema.optional().describe(
+        `${S.filters} Example: {"name": "foo"} to filter by exact name match.`
+      ),
     },
   },
   async ({ skip, limit, tags, filters }) => {
